@@ -4,10 +4,12 @@ packages:
   android_alarm_manager_plus:
     dependency: "direct main"
     description:
-      name: android_alarm_manager_plus
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.2"
+      path: "packages/android_alarm_manager_plus"
+      ref: HEAD
+      resolved-ref: bd74a786bc60128c4ecbc34751387e97d4210f2d
+      url: "https://github.com/jja08111/plus_plugins.git"
+    source: git
+    version: "1.0.2"
   async:
     dependency: transitive
     description:

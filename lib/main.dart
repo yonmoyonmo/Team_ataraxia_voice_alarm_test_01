@@ -1,11 +1,14 @@
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await AndroidAlarmManager.initialize();
+  runApp(const VoiceAlarm());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class VoiceAlarm extends StatelessWidget {
+  const VoiceAlarm({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,24 +17,20 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(),
+      home: const VoiceAlarmHome(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+class VoiceAlarmHome extends StatefulWidget {
+  const VoiceAlarmHome({Key? key}) : super(key: key);
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<VoiceAlarmHome> createState() => VoiceAlarmHomeState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+class VoiceAlarmHomeState extends State<VoiceAlarmHome> {
+  static void showprint() {
+    print('alarm done');
   }
 
   @override
@@ -44,18 +43,27 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+            const Text("asdasdas"),
+            const SizedBox(
+              height: 100,
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
+            ElevatedButton(
+                onPressed: () {
+                  AndroidAlarmManager.oneShot(
+                    const Duration(seconds: 5),
+                    1,
+                    showprint,
+                    alarmClock: true,
+                    wakeup: true,
+                    rescheduleOnReboot: true,
+                  );
+                },
+                child: const Text("tttest"))
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: () {},
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
