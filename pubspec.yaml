@@ -42,6 +42,8 @@ dependencies:
   mobx: ^2.0.5
   flutter_mobx: ^2.0.2
   permission_handler: ^8.2.2
+  flutter_sound_lite: ^8.4.1
+  path_provider: ^2.0.5
 
 dev_dependencies:
   flutter_test:

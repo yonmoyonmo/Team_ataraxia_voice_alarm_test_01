@@ -1,4 +1,4 @@
-import 'package:voice_alarm_test_01/alarm_flag_manager.dart';
+import 'package:voice_alarm_test_01/alarm/alarm_flag_manager.dart';
 import 'package:voice_alarm_test_01/store/alarm_status.dart';
 
 class AlarmPollingWorker {

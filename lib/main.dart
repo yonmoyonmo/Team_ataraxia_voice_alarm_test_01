@@ -2,26 +2,32 @@ import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:voice_alarm_test_01/alarm_polling_worker.dart';
-import 'package:voice_alarm_test_01/alarm_screen.dart';
+import 'package:voice_alarm_test_01/alarm/alarm_polling_worker.dart';
+import 'package:voice_alarm_test_01/screen/alarm_screen.dart';
+import 'package:voice_alarm_test_01/screen/set_voice_alarm.dart';
 import 'package:voice_alarm_test_01/store/alarm_status.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   var status = await Permission.ignoreBatteryOptimizations.request();
-  print("11");
+  print("ignoreBatteryOptimizations permission acquired");
   if (status.isDenied) {
     return;
   } else {
     var status2 = await Permission.systemAlertWindow.request();
-    print("22");
+    print("systemAlertWindow permission acquired");
     if (status2.isDenied) {
       return;
     } else {
-      await AndroidAlarmManager.initialize();
-      AlarmPollingWorker().createPollingWorker();
-      runApp(const VoiceAlarm());
+      var status3 = await Permission.storage.request();
+      if (status3.isDenied) {
+        return;
+      } else {
+        await AndroidAlarmManager.initialize();
+        AlarmPollingWorker().createPollingWorker();
+        runApp(const VoiceAlarm());
+      }
     }
   }
 }
@@ -51,13 +57,6 @@ class VoiceAlarmHome extends StatefulWidget {
 
 class VoiceAlarmHomeState extends State<VoiceAlarmHome>
     with WidgetsBindingObserver {
-  static void emptyCallback() {}
-
-  DateTime dateTime = DateTime.now();
-  int durationSeconds = 0;
-  String? message;
-  int countingId = 0;
-
   @override
   void initState() {
     super.initState();
@@ -94,74 +93,7 @@ class VoiceAlarmHomeState extends State<VoiceAlarmHome>
         if (status.isFired) {
           return const AlarmScreen();
         } else {
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text("voice alarm demo"),
-            ),
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  const Text(
-                    "Voice Alarm Test 01",
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  const SizedBox(
-                    height: 50,
-                  ),
-                  Text(durationSeconds.toString()),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  TextField(
-                    decoration:
-                        const InputDecoration(label: Text("how much seconds")),
-                    onChanged: (text) {
-                      setState(() {
-                        durationSeconds = int.parse(text);
-                      });
-                    },
-                  ),
-                  const SizedBox(
-                    height: 50,
-                  ),
-                  if (message != null)
-                    Text(
-                      message!,
-                      style: const TextStyle(fontSize: 18, color: Colors.red),
-                    ),
-                  ElevatedButton(
-                      onPressed: () {
-                        if (durationSeconds != 0) {
-                          setState(() {
-                            dateTime = DateTime.now()
-                                .add(Duration(seconds: durationSeconds));
-                          });
-
-                          print("duration is set");
-
-                          AndroidAlarmManager.oneShotAt(
-                            dateTime,
-                            countingId,
-                            emptyCallback,
-                            alarmClock: true,
-                            wakeup: true,
-                            rescheduleOnReboot: true,
-                          );
-                          setState(() {
-                            countingId++;
-                          });
-                        } else {
-                          setState(() {
-                            message = "no input";
-                          });
-                        }
-                      },
-                      child: const Text("set the alarm"))
-                ],
-              ),
-            ),
-          );
+          return const SetVoicAlarm();
         }
       },
     );
