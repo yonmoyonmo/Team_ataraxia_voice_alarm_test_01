@@ -99,3 +99,11 @@ class VoiceAlarmHomeState extends State<VoiceAlarmHome>
     );
   }
 }
+
+/**
+ * 알람마다 유니크한 아이디를 줘야하는데...
+ * 알람 리스트를 JSON 파일로 유지해야 하는데...
+ * 알람마다 목소리가 달라야 하는데...
+ * 하나의 알람 하나의 목소리 정책이라면....?
+ * 일단 IOS는 버린다...?
+ */
