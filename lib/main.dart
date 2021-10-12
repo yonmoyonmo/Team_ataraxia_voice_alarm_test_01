@@ -1,6 +1,7 @@
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:voice_alarm_test_01/alarm_polling_worker.dart';
 import 'package:voice_alarm_test_01/alarm_screen.dart';
 import 'package:voice_alarm_test_01/store/alarm_status.dart';
@@ -8,10 +9,21 @@ import 'package:voice_alarm_test_01/store/alarm_status.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await AndroidAlarmManager.initialize();
-  AlarmPollingWorker().createPollingWorker();
-
-  runApp(const VoiceAlarm());
+  var status = await Permission.ignoreBatteryOptimizations.request();
+  print("11");
+  if (status.isDenied) {
+    return;
+  } else {
+    var status2 = await Permission.systemAlertWindow.request();
+    print("22");
+    if (status2.isDenied) {
+      return;
+    } else {
+      await AndroidAlarmManager.initialize();
+      AlarmPollingWorker().createPollingWorker();
+      runApp(const VoiceAlarm());
+    }
+  }
 }
 
 class VoiceAlarm extends StatelessWidget {
@@ -67,6 +79,7 @@ class VoiceAlarmHomeState extends State<VoiceAlarmHome>
       case AppLifecycleState.inactive:
         break;
       case AppLifecycleState.paused:
+        AlarmPollingWorker().createPollingWorker();
         break;
       case AppLifecycleState.detached:
         break;
